@@ -1,0 +1,2 @@
+DEBUG	2018/09/01 16:50:25.282896 docker.go:38: docker exec info:containerName cli,cfg:{User: Privileged:false Tty:false AttachStdin:false AttachStderr:false AttachStdout:false Detach:false DetachKeys: Env:[] WorkingDir: Cmd:[sleep 5]}
+DEBUG	2018/09/01 16:50:25.336560 docker.go:38: docker exec info:containerName cli,cfg:{User: Privileged:false Tty:false AttachStdin:false AttachStderr:false AttachStdout:false Detach:false DetachKeys: Env:[] WorkingDir: Cmd:[/home/main]}

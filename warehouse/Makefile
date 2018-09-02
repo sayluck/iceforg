@@ -1,3 +1,6 @@
+deploy:
+	./deploy.sh
+
 .PHONY: clean
 clean:
-	docker rm $(docker ps -aq)
+	./clean.sh
