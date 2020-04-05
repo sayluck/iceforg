@@ -1,1 +1,0 @@
-DEBUG	2018/09/02 11:17:24.375226 docker.go:38: docker exec info:containerName cli,cfg:{User: Privileged:false Tty:false AttachStdin:false AttachStderr:false AttachStdout:false Detach:false DetachKeys: Env:[] WorkingDir: Cmd:[/opt/data/contracts/fabric/74657374d41d8cd98f00b204e9800998ecf8427e/332e362e39d41d8cd98f00b204e9800998ecf8427eexample.go]}
