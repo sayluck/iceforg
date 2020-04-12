@@ -18,18 +18,16 @@ type readCfg struct {
 	*config
 	locker sync.Mutex
 }
-type config struct {
-	DB *db `yaml:"database",toml:"database"`
-}
 
-// TODO
-type loadConf interface {
-	loadConfig(opts ...opt) *config
+type config struct {
+	DB  *DB  `yaml:"database",toml:"database"`
+	App *App `yaml:"app",toml:"app"`
 }
 
 type defConfig struct {
 	filePath string
 }
+
 type opt func(*defConfig)
 
 func GetConfig(opts ...opt) *config {
@@ -38,6 +36,7 @@ func GetConfig(opts ...opt) *config {
 	}
 	return loadConfig(opts...)
 }
+
 func SetConfigFile(filePath string) opt {
 	return func(dc *defConfig) {
 		dc.filePath = filePath
@@ -48,12 +47,11 @@ func loadConfig(opts ...opt) *config {
 	cfg.locker.Lock()
 	defer cfg.locker.Unlock()
 	if cfg.config == nil {
-		dc := defConfig{
+		dc := &defConfig{
 			filePath: defaultConfigPath,
 		}
-
 		for _, op := range opts {
-			op(&dc)
+			op(dc)
 		}
 		err := common.LoadFile(dc.filePath, &cfg.config)
 		if err != nil {

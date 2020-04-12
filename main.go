@@ -1,5 +1,11 @@
 package main
 
+import (
+	"iceforg/app"
+	"iceforg/start"
+)
+
 func main() {
-	return
+	start.AppInit()
+	app.Run()
 }

@@ -1,5 +1,10 @@
+app:
+    port : 8089
+
 database:
   mysql:
-    user : root
-    password : Tech2501
-    url : 10.11.22.33:3306
+    userName : root
+    password : example
+    url : localhost:33061
+    dbName : iceforg
+    logMode : true
