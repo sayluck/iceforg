@@ -7,8 +7,9 @@ import (
 
 const (
 	// file type
-	YAML = `yaml`
-	TOML = `toml`
+	YAML       = "yaml"
+	TOML       = "toml"
+	PROPERTIES = "properties"
 )
 
 type fileTools interface {
@@ -25,6 +26,10 @@ func LoadFileFactory(fielPath string) fileTools {
 		}
 	case YAML:
 		return &yaml{
+			filePath: fielPath,
+		}
+	case PROPERTIES:
+		return &properties{
 			filePath: fielPath,
 		}
 	default:

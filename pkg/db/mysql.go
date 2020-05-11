@@ -15,13 +15,13 @@ type mysql struct {
 	locker sync.Mutex
 }
 
-var MysqlProvider = new(mysql)
+var mysqlProvider = new(mysql)
 
 func GetMysqlProvider() *gorm.DB {
-	if MysqlProvider.db == nil {
-		MysqlProvider.initer()
+	if mysqlProvider.db == nil {
+		mysqlProvider.initer()
 	}
-	return MysqlProvider.db
+	return mysqlProvider.db
 }
 
 func (m *mysql) getConnectStr() string {

@@ -1,5 +1,10 @@
 app:
-    port : 8089
+  port : 8089
+  mode : release
+  log:
+    prettyPrint : false
+    level : debug
+
 
 database:
   mysql:
@@ -7,4 +12,9 @@ database:
     password : example
     url : localhost:33061
     dbName : iceforg
-    logMode : true
+    logMode : false
+  redis:
+    password : example
+    addr : localhost:6379
+    dbNum : 0
+    pong : PONG

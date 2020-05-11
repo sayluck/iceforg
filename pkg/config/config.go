@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"iceforg/pkg/common"
 	"sync"
+
+	"github.com/magiconair/properties"
 )
 
 var (
@@ -20,8 +22,9 @@ type readCfg struct {
 }
 
 type config struct {
-	DB  *DB  `yaml:"database",toml:"database"`
-	App *App `yaml:"app",toml:"app"`
+	DB         *DB  `yaml:"database",toml:"database"`
+	App        *App `yaml:"app",toml:"app"`
+	Properties *properties.Properties
 }
 
 type defConfig struct {
@@ -53,6 +56,7 @@ func loadConfig(opts ...opt) *config {
 		for _, op := range opts {
 			op(dc)
 		}
+		cfg.config = new(config)
 		err := common.LoadFile(dc.filePath, &cfg.config)
 		if err != nil {
 			panic(fmt.Sprintf("load system config failed,error msg(%s)", err.Error()))
@@ -60,3 +64,7 @@ func loadConfig(opts ...opt) *config {
 	}
 	return cfg.config
 }
+
+//func loadPropertiesConf(*config) *config {
+////
+//}

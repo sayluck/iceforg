@@ -10,6 +10,7 @@ import (
 const (
 	mysqlType = "mysql"
 	mongoType = "mongo"
+	redisType = "redis"
 )
 
 type initer interface {
@@ -21,10 +22,13 @@ var initMap = map[string]initer{}
 func registerDB(dbType string, value reflect.Value) {
 	switch strings.ToLower(dbType) {
 	case mysqlType:
-		MysqlProvider.config = value.Interface().(*config.Mysql)
-		initMap[dbType] = MysqlProvider
+		mysqlProvider.config = value.Interface().(*config.Mysql)
+		initMap[dbType] = mysqlProvider
+	case redisType:
+		redisProvider.config = value.Interface().(*config.Redis)
+		initMap[dbType] = redisProvider
 	default:
-		panic(fmt.Sprintf("register db failed,unsupport db type(%s)", dbType))
+		panic(fmt.Sprintf("register client failed,unsupport client type(%s)", dbType))
 	}
 }
 

@@ -2,7 +2,11 @@ package controler
 
 import (
 	"fmt"
+	"iceforg/app/common"
+	"iceforg/app/middle_ware"
+	"iceforg/pkg/common/api"
 	"iceforg/pkg/config"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,13 +21,25 @@ type Route struct {
 }
 
 func (r *Route) Router() {
-	router := gin.Default()
+	router := gin.New()
+
+	// middle ware
+	router.Use(middle_ware.Trace())
+	router.Use(middle_ware.RecordPanic())
 	routerGrp := router.Group(apiVersion)
 
-	// middleware
+	userLoginRouter(routerGrp)
+
+	routerGrp.Use(middle_ware.Auth())
 	userRouter(routerGrp)
+
 	if r.App != nil && r.Port != "" {
 		defaultPort = r.Port
 	}
 	router.Run(fmt.Sprintf(":%s", defaultPort))
+}
+
+func resp(c *gin.Context, obj *api.Resp) {
+	obj.ReqID = c.GetString(common.ReqID)
+	c.JSON(http.StatusOK, obj)
 }

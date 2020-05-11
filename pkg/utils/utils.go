@@ -1,0 +1,62 @@
+package utils
+
+import (
+	"bytes"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"math/rand"
+	"reflect"
+	"time"
+)
+
+func GenerateUUID() string {
+	return GetRandomString(15)
+}
+
+func GetRandomString(length int) string {
+	str := "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	bytes := []byte(str)
+	result := []byte{}
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	for i := 0; i < length; i++ {
+		result = append(result, bytes[r.Intn(len(bytes))])
+	}
+	return string(result)
+}
+
+func PrettyJsonPrint(v interface{}) string {
+	b, err := json.Marshal(v)
+	if err != nil {
+		return fmt.Sprintf("%+v", v)
+	}
+	var out bytes.Buffer
+	err = json.Indent(&out, b, "", "    ")
+	if err != nil {
+		return fmt.Sprintf("%+v", v)
+	}
+	fmt.Println(out.String())
+	return out.String()
+}
+
+func TramsStruct(source interface{}, target interface{}) error {
+	sKind := reflect.ValueOf(source).Elem().Kind()
+	tKind := reflect.ValueOf(target).Elem().Kind()
+	if sKind == reflect.Ptr {
+		sKind = reflect.ValueOf(source).Elem().Elem().Kind()
+	}
+	if tKind == reflect.Ptr {
+		tKind = reflect.ValueOf(target).Elem().Elem().Kind()
+	}
+
+	if sKind != reflect.Struct ||
+		tKind != reflect.Struct {
+		return errors.New("source or target's kind must ne a struct")
+	}
+
+	data, err := json.Marshal(source)
+	if err != nil {
+		return errors.New("tramsStruct error," + err.Error())
+	}
+	return json.Unmarshal(data, target)
+}
