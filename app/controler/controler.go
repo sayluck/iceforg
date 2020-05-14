@@ -13,7 +13,7 @@ import (
 
 var (
 	defaultPort = "8080"
-	apiVersion  = "/v1"
+	apiVersion  = "/api/v1"
 )
 
 type Route struct {
@@ -28,6 +28,7 @@ func (r *Route) Router() {
 	router.Use(middle_ware.RecordPanic())
 	routerGrp := router.Group(apiVersion)
 
+	// user register & login
 	userLoginRouter(routerGrp)
 
 	routerGrp.Use(middle_ware.Auth())

@@ -44,3 +44,17 @@ func GetStrMsg(err error) string {
 	}
 	return msg
 }
+
+// GetStrMsg get all string msg from errors
+func GetStrMsgs(errs []error) []string {
+	var msgs []string
+	for _, e := range errs {
+		msg, ok := mLang.Properties.Get(e.Error())
+		if !ok {
+			msgs = append(msgs, e.Error())
+			continue
+		}
+		msgs = append(msgs, msg)
+	}
+	return msgs
+}

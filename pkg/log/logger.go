@@ -12,10 +12,8 @@ var (
 	level       string = "warn"
 )
 
-type Logger interface {
-}
-
 func GetLogrusLogger(logConf ...*config.Log) *logrus.Logger {
+
 	log := logrus.New()
 
 	if len(logConf) > 0 {
@@ -29,6 +27,18 @@ func GetLogrusLogger(logConf ...*config.Log) *logrus.Logger {
 	log.SetLevel(getLogLevel(level))
 
 	return log
+}
+
+func SetLogConfig(log *logrus.Logger, logConf ...*config.Log) {
+	if len(logConf) > 0 {
+		prettyPrint = logConf[0].PrettyPrint
+		level = logConf[0].Level
+	}
+
+	log.SetFormatter(&logrus.JSONFormatter{
+		PrettyPrint: prettyPrint,
+	})
+	log.SetLevel(getLogLevel(level))
 }
 
 func getLogLevel(level string) logrus.Level {

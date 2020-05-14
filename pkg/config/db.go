@@ -6,13 +6,6 @@ type DB struct {
 	Redis *Redis `type:"redis",yaml:"redis",toml:"redis"`
 }
 
-type base struct {
-	URL      string `yaml:"url",toml:"url"`
-	UserName string `yaml:"userName",toml:"userName"`
-	Password string `yaml:"password",toml:"password"`
-	DBName   string `yaml:"dbName",toml:"dbName"`
-}
-
 type Mysql struct {
 	URL          string `yaml:"url",toml:"url"`
 	UserName     string `yaml:"userName",toml:"userName"`

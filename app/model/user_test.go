@@ -12,12 +12,12 @@ func init() {
 
 func TestUser_Save(t *testing.T) {
 	u := User{
-		UserName: "testCase1",
+		UserName: "testCase3",
 		Password: "testPw",
 		NickName: "xiaoyiyi",
 	}
 	n, err := u.Save()
-	if err != nil || n != 1 {
+	if err != nil || n == "" {
 		t.Fatalf("user save failed:%v-%v", n, err)
 	}
 	t.Logf("save num:%v\n", n)

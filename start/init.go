@@ -3,6 +3,7 @@ package start
 import (
 	"iceforg/app/common"
 	"iceforg/app/log"
+	"iceforg/app/validate"
 	"iceforg/pkg/config"
 	"iceforg/pkg/db"
 	"iceforg/pkg/multilingual"
@@ -13,12 +14,19 @@ import (
 )
 
 func AppInit() {
+	// log init
+	log.LogInit()
+
+	defer initRecover()
+
 	// load config
 	cfg := config.GetConfig(
 		config.SetConfigFile("F:/goproject/iceforg/resource/config-Files/config.yaml"),
 	)
 
-	utils.PrettyJsonPrint(cfg.App)
+	// log config
+	log.SetLogConfig(cfg.App.Log)
+	log.Log.Debugf("load app config:%s", utils.PrettyJsonPrint(cfg.App))
 
 	// multilingual init
 	multilingual.InitMultilingual(
@@ -27,11 +35,10 @@ func AppInit() {
 	// app init
 	ginInit(cfg.App)
 
-	// log init
-	log.LogInit(cfg.App.Log)
-
 	// database init
 	initDB(cfg.DB)
+
+	validate.InitValidate()
 }
 
 func initDB(dbCfg *config.DB) {
@@ -41,5 +48,11 @@ func initDB(dbCfg *config.DB) {
 func ginInit(app *config.App) {
 	if strings.ToLower(app.Mode) == common.GinReleaseModle {
 		gin.SetMode(gin.ReleaseMode)
+	}
+}
+
+func initRecover() {
+	if err := recover(); err != nil {
+		log.Log.Fatalf("app init failed:%v\n", err)
 	}
 }

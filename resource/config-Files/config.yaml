@@ -1,9 +1,11 @@
 app:
   port : 8089
-  mode : release
+  mode : debug
   log:
     prettyPrint : false
     level : debug
+  token:
+    expiredAfter : 604800   #3600 * 24 * 7
 
 
 database:

@@ -5,13 +5,26 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"hash/crc32"
 	"math/rand"
 	"reflect"
+	"strconv"
 	"time"
 )
 
-func GenerateUUID() string {
-	return GetRandomString(15)
+func GenerateUUID(n int) string {
+	return GetRandomString(n)
+}
+
+func HashCode(s string) string {
+	v := crc32.ChecksumIEEE([]byte(s))
+	return strconv.FormatUint(uint64(v), 10)
+}
+
+func HashCodeUUID(n int) string {
+	s := GenerateUUID(n)
+	v := crc32.ChecksumIEEE([]byte(s))
+	return strconv.FormatUint(uint64(v), 10)
 }
 
 func GetRandomString(length int) string {

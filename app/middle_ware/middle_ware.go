@@ -12,9 +12,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const (
+	lenUUUD = 15
+)
+
 func Trace() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		reqID := utils.GenerateUUID()
+		reqID := utils.GenerateUUID(lenUUUD)
 		ctx.Set(common.ReqID, reqID)
 
 		Log.Debug(SetStartBaseLog(ctx))

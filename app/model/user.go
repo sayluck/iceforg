@@ -3,6 +3,7 @@ package model
 import (
 	"iceforg/pkg/db"
 	"iceforg/pkg/multilingual"
+	"iceforg/pkg/utils"
 
 	"github.com/jinzhu/gorm"
 )
@@ -18,14 +19,16 @@ func (*User) TableName() string {
 
 type User struct {
 	Base
+	UserID   string `gorm:"column:user_id"`
 	UserName string `gorm:"column:name"`
 	Password string `gorm:"column:password"`
 	NickName string `gorm:"column:nick_name"`
 }
 
-func (u *User) Save() (int64, error) {
-	db := db.GetMysqlProvider().Save(u)
-	return db.RowsAffected, db.Error
+func (u *User) Save() (string, error) {
+	u.UserID = utils.HashCodeUUID(20)
+	db := db.GetMysqlProvider().Save(&u)
+	return u.UserID, db.Error
 }
 
 func (u *User) DetailByKeyProperty() (interface{}, error) {

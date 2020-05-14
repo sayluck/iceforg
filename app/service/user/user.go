@@ -4,6 +4,7 @@ import (
 	"errors"
 	"iceforg/app/common"
 	"iceforg/app/model"
+	"iceforg/pkg/config"
 	"iceforg/pkg/multilingual"
 	"iceforg/pkg/utils"
 	"strings"
@@ -16,7 +17,7 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
-func Register(user *UserRegister) error {
+func Register(user *UserRegister) (string, error) {
 	var err error
 
 	if user.NickName == "" {
@@ -27,10 +28,9 @@ func Register(user *UserRegister) error {
 
 	err = utils.TramsStruct(&user, &userM)
 	if err != nil {
-		return err
+		return "", err
 	}
-	_, err = userM.Save()
-	return err
+	return userM.Save()
 }
 
 func Detail(name string) (interface{}, error) {
@@ -72,7 +72,7 @@ func generateToken(u *model.User) (string, error) {
 		"nbf":      time.Now().Unix(),
 		"iat":      time.Now().Unix(),
 		"iss":      "iceforg",
-		"exp":      int64(time.Now().Unix() + 10), //  60*60*24*1 one day, 10s
+		"exp":      int64(time.Now().Unix() + config.GetConfig().App.Token.ExpiredAfter), //  60*60*24*1 one day, 10s
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
 	return token.SignedString([]byte(common.TokenSecret))

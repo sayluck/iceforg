@@ -4,9 +4,9 @@ import (
 	"iceforg/app/common"
 	. "iceforg/app/log"
 	"iceforg/app/service/user"
+	. "iceforg/app/validate"
 	"iceforg/pkg/common/api"
 	"iceforg/pkg/multilingual"
-	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -31,15 +31,22 @@ func userRouter(r *gin.RouterGroup) {
 
 func register(c *gin.Context) {
 	var (
-		u   user.UserRegister
-		err error
+		u      user.UserRegister
+		err    error
+		userID string
 	)
 	if err = c.ShouldBindJSON(&u); err != nil {
 		resp(c, api.RespFailed(api.ParamsErr, err.Error()))
 		return
 	}
+	errs := ValidateStruct(&u)
+	if len(errs) != 0 {
+		resp(c, api.RespFailed(api.ParamsErr,
+			multilingual.GetStrMsgs(errs)...))
+		return
+	}
 
-	if err = user.Register(&u); err != nil {
+	if userID, err = user.Register(&u); err != nil {
 		if strings.Contains(err.Error(), common.DuplicateEntry) {
 			resp(c, api.RespFailed(api.OperationErr,
 				multilingual.GetStrMsg(multilingual.UserAlreadyExisted)))
@@ -48,7 +55,7 @@ func register(c *gin.Context) {
 		resp(c, api.RespFailed(api.SystemErr, err.Error()))
 		return
 	}
-	c.JSON(http.StatusOK, api.RespSucc("user.ID"))
+	resp(c, api.RespSucc(userID))
 }
 
 func detail(c *gin.Context) {

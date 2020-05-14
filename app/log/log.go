@@ -19,6 +19,10 @@ func LogInit(logConf ...*config.Log) {
 	Log = log.GetLogrusLogger(logConf...)
 }
 
+func SetLogConfig(logConf ...*config.Log) {
+	log.SetLogConfig(Log, logConf...)
+}
+
 func SetStartBaseLog(c *gin.Context) string {
 	if c.Request.Method == common.MethodGet {
 		return fmt.Sprintf("reqID:%s,URL:%s",
