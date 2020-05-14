@@ -17,6 +17,11 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
+const (
+	UserID   = "userID"
+	UserName = "userName"
+)
+
 func Register(user *UserRegister) (string, error) {
 	var err error
 
@@ -30,14 +35,33 @@ func Register(user *UserRegister) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return userM.Save()
+
+	userID, err := userM.Save()
+	if err != nil {
+		return "", err
+	}
+	userM.UserID = userID
+	return generateToken(&userM)
 }
 
-func Detail(name string) (interface{}, error) {
-	user := model.User{
+func Detail(name string) (*UserDetail, error) {
+	user := &model.User{
 		UserName: name,
 	}
-	return user.DetailByKeyProperty()
+
+	var (
+		err        error
+		userCenter = &UserDetail{}
+	)
+	_, err = user.DetailByKeyProperty()
+	if err != nil {
+		return userCenter, err
+	}
+	err = utils.TramsStruct(user, userCenter)
+	if err != nil {
+		Log.Errorf("currentUser trams struct failed,%v", err.Error())
+	}
+	return userCenter, err
 }
 
 func Login(user *UserLogin) (string, error) {
@@ -67,19 +91,20 @@ func Login(user *UserLogin) (string, error) {
 
 func generateToken(u *model.User) (string, error) {
 	claim := jwt.MapClaims{
-		"id":       u.ID,
-		"username": u.UserName,
-		"nbf":      time.Now().Unix(),
-		"iat":      time.Now().Unix(),
-		"iss":      "iceforg",
-		"exp":      int64(time.Now().Unix() + config.GetConfig().App.Token.ExpiredAfter), //  60*60*24*1 one day, 10s
+		UserID:   u.UserID,
+		UserName: u.UserName,
+		"nbf":    time.Now().Unix(),
+		"iat":    time.Now().Unix(),
+		"iss":    "iceforg",
+		"exp":    int64(time.Now().Unix() + config.GetConfig().App.Token.ExpiredAfter), //  60*60*24*1 one day, 10s
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
 	return token.SignedString([]byte(common.TokenSecret))
 }
 
 func ParseToken(t string) (*UserLogin, error) {
-	if t == "" {
+	if t == "" || t == "null" {
+
 		return nil, multilingual.UserInvaildToken
 	}
 	user := &UserLogin{}
@@ -101,7 +126,7 @@ func ParseToken(t string) (*UserLogin, error) {
 		return user, multilingual.UserInvaildToken
 	}
 
-	user.ID = int64(claim["id"].(float64))
-	user.UserName = claim["username"].(string)
+	user.UserID = claim[UserID].(string)
+	user.UserName = claim[UserName].(string)
 	return user, nil
 }

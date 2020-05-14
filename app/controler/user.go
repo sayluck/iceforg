@@ -26,6 +26,7 @@ func userRouter(r *gin.RouterGroup) {
 	{
 		// user
 		user.GET("/", detail)
+		user.GET("/current", currentUser)
 	}
 }
 
@@ -55,6 +56,7 @@ func register(c *gin.Context) {
 		resp(c, api.RespFailed(api.SystemErr, err.Error()))
 		return
 	}
+
 	resp(c, api.RespSucc(userID))
 }
 
@@ -66,7 +68,21 @@ func detail(c *gin.Context) {
 	)
 	name = c.Query("name")
 	if u, err = user.Detail(name); err != nil {
-		resp(c, api.RespFailed("3001", multilingual.GetStrMsg(err)))
+		resp(c, api.RespFailed(api.OperationErr, multilingual.GetStrMsg(err)))
+		return
+	}
+	resp(c, api.RespSucc(u))
+}
+
+func currentUser(c *gin.Context) {
+	var (
+		err  error
+		name string
+		u    *user.UserDetail
+	)
+	name = c.GetString(user.UserName)
+	if u, err = user.Detail(name); err != nil {
+		resp(c, api.RespFailed(api.OperationErr, multilingual.GetStrMsg(err)))
 		return
 	}
 	resp(c, api.RespSucc(u))

@@ -1,7 +1,7 @@
 package model
 
 type Storage interface {
-	Save() (int64, error)
+	Save() (string, error)
 	DetailByKeyProperty() (interface{}, error)
 	IsExistedByKeyProperty() (bool, error)
 	// TODO Add

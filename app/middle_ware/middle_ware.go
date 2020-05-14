@@ -58,7 +58,7 @@ func Auth() gin.HandlerFunc {
 			return
 		}
 		ctx.Set(common.UserName, u.UserName)
-		ctx.Set(common.UserID, u.ID)
+		ctx.Set(common.UserID, u.UserID)
 
 		ctx.Next()
 	}

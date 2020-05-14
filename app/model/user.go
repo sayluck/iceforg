@@ -33,14 +33,13 @@ func (u *User) Save() (string, error) {
 
 func (u *User) DetailByKeyProperty() (interface{}, error) {
 	var (
-		user User
-		err  error
+		err error
 	)
-	err = db.GetMysqlProvider().Where("name = ?", u.UserName).First(&user).Error
+	err = db.GetMysqlProvider().Where("name = ?", u.UserName).First(&u).Error
 	if gorm.IsRecordNotFoundError(err) {
-		return user, multilingual.UserNotExisted
+		return u, multilingual.UserNotExisted
 	}
-	return user, err
+	return u, err
 }
 
 func (u *User) IsExistedByKeyProperty() (bool, error) {

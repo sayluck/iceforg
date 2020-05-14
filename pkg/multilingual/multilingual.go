@@ -40,7 +40,7 @@ func GetStrMsg(err error) string {
 	}
 	msg, ok := mLang.Properties.Get(err.Error())
 	if !ok {
-		return err.Error()
+		return SystemOperationError.Error()
 	}
 	return msg
 }

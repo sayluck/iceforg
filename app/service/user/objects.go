@@ -1,5 +1,6 @@
 package user
 
+// request
 type UserRegister struct {
 	UserName string `json:"userName" validate:"required"`
 	Password string `json:"password" validate:"required"`
@@ -7,7 +8,14 @@ type UserRegister struct {
 }
 
 type UserLogin struct {
-	ID       int64  `json:"id"`
-	UserName string `json:"userName" validate:"required"`
+	UserID   string `json:"UserID"`
+	UserName string `json:"UserName" validate:"required"`
 	Password string `json:"password" validate:"required"`
+}
+
+// response
+type UserDetail struct {
+	UserID   string `json:"userid"`
+	UserName string `json:"userName"`
+	NickName string `json:"nickName"`
 }

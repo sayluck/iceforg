@@ -64,7 +64,8 @@ func TramsStruct(source interface{}, target interface{}) error {
 
 	if sKind != reflect.Struct ||
 		tKind != reflect.Struct {
-		return errors.New("source or target's kind must ne a struct")
+		err := fmt.Sprintf("source[%v] or target[%v]'s kind must be a struct", sKind, tKind)
+		return errors.New(err)
 	}
 
 	data, err := json.Marshal(source)
