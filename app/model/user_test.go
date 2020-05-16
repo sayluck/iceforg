@@ -1,7 +1,7 @@
 package model
 
 import (
-	"iceforg/pkg/test"
+	"iceforg/app/test"
 	"iceforg/pkg/utils"
 	"testing"
 )

@@ -64,7 +64,3 @@ func loadConfig(opts ...opt) *config {
 	}
 	return cfg.config
 }
-
-//func loadPropertiesConf(*config) *config {
-////
-//}

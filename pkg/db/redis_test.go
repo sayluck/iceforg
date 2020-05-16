@@ -2,7 +2,7 @@ package db
 
 import (
 	"fmt"
-	"iceforg/pkg/test"
+	"iceforg/app/test"
 	"testing"
 	"time"
 
