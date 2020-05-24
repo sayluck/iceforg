@@ -7,7 +7,6 @@ app:
   token:
     expiredAfter : 604800   #3600 * 24 * 7
 
-
 database:
   mysql:
     userName : root
@@ -20,3 +19,10 @@ database:
     addr : localhost:6379
     dbNum : 0
     pong : PONG
+  etcd:
+    addrs:
+      - "127.0.0.1:32790"
+      - "127.0.0.1:32788"
+      - "127.0.0.1:32786"
+    dialTimeout: 30
+    secure: false

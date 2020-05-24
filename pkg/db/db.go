@@ -11,6 +11,7 @@ const (
 	mysqlType = "mysql"
 	mongoType = "mongo"
 	redisType = "redis"
+	etcdType  = "etcd"
 )
 
 type initer interface {
@@ -27,6 +28,9 @@ func registerDB(dbType string, value reflect.Value) {
 	case redisType:
 		redisProvider.config = value.Interface().(*config.Redis)
 		initMap[dbType] = redisProvider
+	case etcdType:
+		etcdProvider.config = value.Interface().(*config.Etcd)
+		initMap[dbType] = etcdProvider
 	default:
 		panic(fmt.Sprintf("register client failed,unsupport client type(%s)", dbType))
 	}
