@@ -12,7 +12,7 @@ func init() {
 
 func TestUser_Save(t *testing.T) {
 	u := User{
-		UserName: "testCase3",
+		UserName: "testCase4",
 		Password: "testPw",
 		NickName: "xiaoyiyi",
 	}
@@ -25,7 +25,7 @@ func TestUser_Save(t *testing.T) {
 
 func TestUser_DetailByKeyProperty(t *testing.T) {
 	u := User{
-		UserName: "testCase1",
+		UserName: "testCase4",
 	}
 	data, err := u.DetailByKeyProperty()
 	if err != nil {

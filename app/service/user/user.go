@@ -40,7 +40,7 @@ func Register(user *UserRegister) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	userM.UserID = userID
+	userM.Code = userID
 	return generateToken(&userM)
 }
 
@@ -91,7 +91,7 @@ func Login(user *UserLogin) (string, error) {
 
 func generateToken(u *model.User) (string, error) {
 	claim := jwt.MapClaims{
-		UserID:   u.UserID,
+		UserID:   u.Code,
 		UserName: u.UserName,
 		"nbf":    time.Now().Unix(),
 		"iat":    time.Now().Unix(),

@@ -21,7 +21,7 @@ func AppInit() {
 
 	// load config
 	cfg := config.GetConfig(
-		config.SetConfigFile("F:/goproject/iceforg/resource/config-Files/config.yaml"),
+		config.SetConfigFile("F:/goproject/iceforg/resource/config_files/config.yaml"),
 	)
 
 	// log config
@@ -30,7 +30,7 @@ func AppInit() {
 
 	// multilingual init
 	multilingual.InitMultilingual(
-		"F:/goproject/iceforg/resource/config-Files/multilingual_zh.properties")
+		"F:/goproject/iceforg/resource/config_files/multilingual_zh.properties")
 
 	// app init
 	ginInit(cfg.App)

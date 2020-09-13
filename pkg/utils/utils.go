@@ -10,6 +10,12 @@ import (
 	"reflect"
 	"strconv"
 	"time"
+
+	"github.com/satori/go.uuid"
+)
+
+const (
+	maxUUIDLen = 20
 )
 
 func GenerateUUID(n int) string {
@@ -27,9 +33,16 @@ func HashCodeUUID(n int) string {
 	return strconv.FormatUint(uint64(v), 10)
 }
 
-func GetRandomString(length int) string {
-	str := "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	bytes := []byte(str)
+func GetRandomString(length int, str ...string) string {
+	strTmp := "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	if len(str) != 0 {
+		strTmp = ""
+		for _, val := range str {
+			strTmp = strTmp + val
+		}
+	}
+
+	bytes := []byte(strTmp)
 	result := []byte{}
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	for i := 0; i < length; i++ {
@@ -73,4 +86,9 @@ func TramsStruct(source interface{}, target interface{}) error {
 		return errors.New("tramsStruct error," + err.Error())
 	}
 	return json.Unmarshal(data, target)
+}
+
+func CodeGenerate() string {
+	uuid := HashCode(uuid.NewV4().String())
+	return uuid + GetRandomString(maxUUIDLen-len(uuid), "0123456789")
 }

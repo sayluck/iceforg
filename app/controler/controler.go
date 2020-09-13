@@ -31,6 +31,9 @@ func (r *Route) Router() {
 	// user register & login
 	userLoginRouter(routerGrp)
 
+	// menu
+	menuRouterGroup(routerGrp)
+
 	routerGrp.Use(middle_ware.Auth())
 	userRouter(routerGrp)
 

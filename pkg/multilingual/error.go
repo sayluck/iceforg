@@ -13,4 +13,7 @@ var (
 	UserLoginErr       = errors.New("userLoginErr")
 	UserInvaildToken   = errors.New("userInvaildToken")
 	UserTokenIsExpired = errors.New("userTokenIsExpired")
+
+	//menu error
+	MenuAlreadyExisted = errors.New("menuAlreadyExisted")
 )

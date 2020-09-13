@@ -5,6 +5,8 @@ import (
 	"iceforg/pkg/config"
 	"sync"
 
+	"github.com/prometheus/common/log"
+
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 )
@@ -19,13 +21,14 @@ var mysqlProvider = new(mysql)
 
 func GetMysqlProvider() *gorm.DB {
 	if mysqlProvider.db == nil {
+		mysqlProvider.config = config.GetConfig().DB.Mysql
 		mysqlProvider.initer()
 	}
 	return mysqlProvider.db
 }
 
 func (m *mysql) getConnectStr() string {
-	if m == nil {
+	if m == nil || m.config == nil {
 		return ""
 	}
 	return fmt.Sprintf("%s:%s@(%s)/%s?charset=utf8&parseTime=True&loc=Local",
@@ -44,7 +47,7 @@ func (m *mysql) initer() {
 		defer m.locker.Unlock()
 
 		if m.db, err = gorm.Open(mysqlType, m.getConnectStr()); err != nil {
-			// TODO add log
+			log.Error("mysql start failed,%s", err.Error())
 			panic(fmt.Sprintf("mysql start failed,%s", err.Error()))
 		}
 

@@ -8,9 +8,9 @@ type UserRegister struct {
 }
 
 type UserLogin struct {
-	UserID   string `json:"UserID"`
-	UserName string `json:"UserName" validate:"required"`
-	Password string `json:"password" validate:"required"`
+	UserID   string `json:"Code"`
+	UserName string `json:"UserName";validate:"required"`
+	Password string `json:"password";validate:"required"`
 }
 
 // response
