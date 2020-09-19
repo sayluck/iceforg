@@ -5,5 +5,5 @@ import (
 )
 
 func (m *BaseReq) CheckCreator() error {
-	return validate.GetInstance().Field(m.Creator, "required")
+	return validate.GetInstance().Field("creator", "required")
 }
