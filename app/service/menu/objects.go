@@ -1,11 +1,20 @@
 package menu
 
+import (
+	"context"
+	"iceforg/app/service/common"
+)
+
 // request
 type MenuReq struct {
-	PageNum int    `json:"pageNum";validate:"required"`
-	Name    string `json:"name";validate:"required"`
+	common.BaseReq
+
+	PageNum int    `json:"pageNum" validate:"required"`
+	Name    string `json:"name" validate:"required"`
 	Sort    int    `json:"sort"`
-	Route   string `json:"route";validate:"required"`
+	Route   string `json:"route" validate:"required"`
+
+	context.Context `json:"-"`
 }
 
 // response

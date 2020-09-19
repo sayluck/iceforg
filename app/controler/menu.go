@@ -29,7 +29,7 @@ func addMenu(c *gin.Context) {
 		resp(c, api.RespFailed(api.ParamsErr, err.Error()))
 		return
 	}
-	errs := ValidateStruct(&m)
+	errs := ValidateStruct(c, &m)
 	if len(errs) != 0 {
 		resp(c, api.RespFailed(api.ParamsErr,
 			multilingual.GetStrMsgs(errs)...))

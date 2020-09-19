@@ -1,6 +1,7 @@
 package menu
 
 import (
+	"context"
 	"fmt"
 	. "iceforg/app/log"
 	"iceforg/app/model"
@@ -12,16 +13,15 @@ func AddMenu(menu *MenuReq) (string, error) {
 
 	if menu == nil {
 		errMsg := "menu is nil"
-		Log.Error(errMsg)
-		err = fmt.Errorf(errMsg)
-		return "", err
+		IceLog.Error(context.Background(), errMsg)
+		return "", fmt.Errorf(errMsg)
 	}
 
 	menuM := model.Menu{}
 
 	err = utils.TramsStruct(&menu, &menuM)
 	if err != nil {
-		Log.Error(err)
+		IceLog.Error(menu.Context, err)
 		return "", err
 	}
 	return menuM.Save()

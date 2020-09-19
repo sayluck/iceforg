@@ -1,12 +1,15 @@
 package middle_ware
 
 import (
+	"bytes"
+	"fmt"
 	"iceforg/app/common"
 	. "iceforg/app/log"
 	"iceforg/app/service/user"
 	"iceforg/pkg/common/api"
 	"iceforg/pkg/multilingual"
 	"iceforg/pkg/utils"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -21,11 +24,11 @@ func Trace() gin.HandlerFunc {
 		reqID := utils.GenerateUUID(lenUUUD)
 		ctx.Set(common.ReqID, reqID)
 
-		Log.Debug(SetStartBaseLog(ctx))
+		IceLog.Logger.Debug(setStartBaseLog(ctx))
 
 		ctx.Next()
 
-		Log.Debug(SetEndBaseLog(ctx))
+		IceLog.Logger.Debug(setEndBaseLog(ctx))
 	}
 }
 
@@ -38,7 +41,7 @@ func RecordPanic() gin.HandlerFunc {
 					multilingual.GetStrMsg(multilingual.SystemPanicError))
 				resp.ReqID = c.GetString(common.ReqID)
 				c.JSON(http.StatusInternalServerError, resp)
-				Log.Errorf("recover form panic:%v", err)
+				IceLog.Errorf(c, "recover form panic:%v", err)
 			}
 		}()
 		c.Next()
@@ -62,4 +65,29 @@ func Auth() gin.HandlerFunc {
 
 		ctx.Next()
 	}
+}
+
+func setStartBaseLog(c *gin.Context) string {
+	if c.Request.Method == common.MethodGet {
+		return fmt.Sprintf("reqID:%s,URL:%s",
+			c.GetString(common.ReqID),
+			c.Request.RequestURI)
+	}
+	bodyStr := ""
+	body, err := ioutil.ReadAll(c.Request.Body)
+	if err == nil {
+		bodyStr = string(body)
+	}
+	c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(body))
+
+	return fmt.Sprintf("reqID:%s,URL:%s,Body:%+v",
+		c.GetString(common.ReqID),
+		c.Request.RequestURI,
+		bodyStr)
+}
+
+func setEndBaseLog(c *gin.Context) string {
+	return fmt.Sprintf("reqID:%s,Status:%d",
+		c.GetString(common.ReqID),
+		c.Writer.Status())
 }

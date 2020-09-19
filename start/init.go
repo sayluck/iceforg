@@ -1,6 +1,7 @@
 package start
 
 import (
+	"context"
 	"iceforg/app/common"
 	"iceforg/app/log"
 	"iceforg/app/validate"
@@ -26,7 +27,7 @@ func AppInit() {
 
 	// log config
 	log.SetLogConfig(cfg.App.Log)
-	log.Log.Debugf("load app config:%s", utils.PrettyJsonPrint(cfg.App))
+	log.IceLog.Debugf(context.Background(), "load app config:%s", utils.PrettyJsonPrint(cfg.App))
 
 	// multilingual init
 	multilingual.InitMultilingual(
@@ -53,6 +54,6 @@ func ginInit(app *config.App) {
 
 func initRecover() {
 	if err := recover(); err != nil {
-		log.Log.Fatalf("app init failed:%v\n", err)
+		log.IceLog.Fatalf(context.Background(), "app init failed:%v\n", err)
 	}
 }

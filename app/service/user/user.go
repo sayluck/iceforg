@@ -1,6 +1,7 @@
 package user
 
 import (
+	"context"
 	"errors"
 	"iceforg/app/common"
 	"iceforg/app/model"
@@ -59,7 +60,7 @@ func Detail(name string) (*UserDetail, error) {
 	}
 	err = utils.TramsStruct(user, userCenter)
 	if err != nil {
-		Log.Errorf("currentUser trams struct failed,%v", err.Error())
+		IceLog.Errorf(context.Background(), "currentUser trams struct failed,%v", err.Error())
 	}
 	return userCenter, err
 }
@@ -83,7 +84,7 @@ func Login(user *UserLogin) (string, error) {
 
 	token, err := generateToken(&u)
 	if err != nil {
-		Log.Errorf("generate token error:%v", err)
+		IceLog.Errorf(context.Background(), "generate token error:%v", err)
 		return "", multilingual.SystemOperationError
 	}
 	return token, nil

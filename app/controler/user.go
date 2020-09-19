@@ -40,7 +40,7 @@ func register(c *gin.Context) {
 		resp(c, api.RespFailed(api.ParamsErr, err.Error()))
 		return
 	}
-	errs := ValidateStruct(&u)
+	errs := ValidateStruct(c, &u)
 	if len(errs) != 0 {
 		resp(c, api.RespFailed(api.ParamsErr,
 			multilingual.GetStrMsgs(errs)...))
@@ -96,14 +96,14 @@ func login(c *gin.Context) {
 	)
 
 	if err := c.ShouldBindJSON(&u); err != nil {
-		Log.Errorf("bind user error:%v", err)
+		IceLog.Errorf(c, "bind user error:%v", err)
 		resp(c, api.RespFailed(api.ParamsErr, err.Error()))
 		return
 	}
 
 	token, err = user.Login(&u)
 	if err != nil {
-		Log.Errorf("login error:%s", err.Error())
+		IceLog.Errorf(c, "login error:%s", err.Error())
 		resp(c, api.RespFailed(api.SystemErr, multilingual.GetStrMsg(err)))
 		return
 	}

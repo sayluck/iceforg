@@ -1,49 +1,56 @@
 package log
 
 import (
-	"bytes"
+	"context"
 	"fmt"
 	"iceforg/app/common"
 	"iceforg/pkg/config"
 	"iceforg/pkg/log"
-	"io/ioutil"
-
-	"github.com/gin-gonic/gin"
+	"iceforg/pkg/utils"
 
 	"github.com/sirupsen/logrus"
 )
 
-var Log *logrus.Logger
+type iceLog struct {
+	Logger *logrus.Logger
+}
+
+var IceLog = new(iceLog)
 
 func LogInit(logConf ...*config.Log) {
-	Log = log.GetLogrusLogger(logConf...)
+	IceLog.Logger = log.GetLogrusLogger(logConf...)
 }
 
 func SetLogConfig(logConf ...*config.Log) {
-	log.SetLogConfig(Log, logConf...)
+	log.SetLogConfig(IceLog.Logger, logConf...)
 }
 
-func SetStartBaseLog(c *gin.Context) string {
-	if c.Request.Method == common.MethodGet {
-		return fmt.Sprintf("reqID:%s,URL:%s",
-			c.GetString(common.ReqID),
-			c.Request.RequestURI)
+func prepareLogMsg(c context.Context, arg ...interface{}) string {
+	var reqID interface{}
+	if c.Value(common.ReqID) != nil {
+		reqID = c.Value(common.ReqID)
+	} else {
+		reqID = utils.GenerateUUID(15)
 	}
-	bodyStr := ""
-	body, err := ioutil.ReadAll(c.Request.Body)
-	if err == nil {
-		bodyStr = string(body)
-	}
-	c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(body))
-
-	return fmt.Sprintf("reqID:%s,URL:%s,Body:%+v",
-		c.GetString(common.ReqID),
-		c.Request.RequestURI,
-		bodyStr)
+	return fmt.Sprintf("reqID:%v,detial:%v",
+		reqID, arg)
 }
 
-func SetEndBaseLog(c *gin.Context) string {
-	return fmt.Sprintf("reqID:%s,Status:%d",
-		c.GetString(common.ReqID),
-		c.Writer.Status())
+func (l *iceLog) Debug(c context.Context, arg ...interface{}) {
+	IceLog.Logger.Debug(prepareLogMsg(c, arg))
+}
+
+func (l *iceLog) Errorf(c context.Context, format string, arg ...interface{}) {
+	IceLog.Logger.Errorf(format, prepareLogMsg(c, arg))
+}
+
+func (l *iceLog) Debugf(c context.Context, format string, arg ...interface{}) {
+	IceLog.Logger.Debugf(format, prepareLogMsg(c, arg))
+}
+
+func (l *iceLog) Error(c context.Context, arg ...interface{}) {
+	IceLog.Logger.Error(prepareLogMsg(c, arg))
+}
+func (l *iceLog) Fatalf(c context.Context, format string, arg ...interface{}) {
+	IceLog.Logger.Fatalf(format, prepareLogMsg(c, arg))
 }

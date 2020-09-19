@@ -14,7 +14,7 @@ func (*Menu) TableName() string {
 }
 
 type Menu struct {
-	Base
+	Base    `json:"base"`
 	PageNum int    `gorm:"column:m_page_num"`
 	Name    string `gorm:"column:m_name"`
 	Sort    int    `gorm:"column:m_sort"`
