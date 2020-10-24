@@ -4,10 +4,10 @@ import (
 	"context"
 )
 
-func (m *MenuReq) SetContext(ctx context.Context) {
+func (m *MenuAddReq) SetContext(ctx context.Context) {
 	m.Context = ctx
 }
 
-func (u *MenuReq) CustomValidate() error {
+func (u *MenuAddReq) CustomValidate() error {
 	return u.BaseReq.CheckCreator()
 }

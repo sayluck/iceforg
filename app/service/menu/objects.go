@@ -6,7 +6,7 @@ import (
 )
 
 // request
-type MenuReq struct {
+type MenuAddReq struct {
 	common.BaseReq
 
 	PageNum int    `json:"pageNum" validate:"required"`

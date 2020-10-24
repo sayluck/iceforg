@@ -6,9 +6,10 @@ import (
 	. "iceforg/app/log"
 	"iceforg/app/model"
 	"iceforg/pkg/utils"
+	"strconv"
 )
 
-func AddMenu(menu *MenuReq) (string, error) {
+func AddMenu(menu *MenuAddReq) (string, error) {
 	var err error
 
 	if menu == nil {
@@ -25,4 +26,16 @@ func AddMenu(menu *MenuReq) (string, error) {
 		return "", err
 	}
 	return menuM.Save()
+}
+
+func List(pageNum string) (interface{}, error) {
+	var (
+		menuM model.Menu
+		err   error
+	)
+	menuM.PageNum, err = strconv.Atoi(pageNum)
+	if err != nil {
+		return nil, err
+	}
+	return menuM.List()
 }

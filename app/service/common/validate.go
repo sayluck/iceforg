@@ -1,9 +1,17 @@
 package common
 
-import (
-	"iceforg/app/validate"
-)
+import "fmt"
 
 func (m *BaseReq) CheckCreator() error {
-	return validate.GetInstance().Field("creator", "required")
+	if m.Creator == "" {
+		return fmt.Errorf("field [creator] is required")
+	}
+	return nil
+}
+
+func (m *BaseReq) CheckModifier() error {
+	if m.Modifier == "" {
+		return fmt.Errorf("field [modifier] is required")
+	}
+	return nil
 }

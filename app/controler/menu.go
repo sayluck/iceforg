@@ -16,12 +16,13 @@ func menuRouterGroup(r *gin.RouterGroup) {
 	menu := r.Group("menu")
 	{
 		menu.POST("/", addMenu)
+		menu.GET("", list)
 	}
 }
 
 func addMenu(c *gin.Context) {
 	var (
-		m      menu.MenuReq
+		m      menu.MenuAddReq
 		err    error
 		userID string
 	)
@@ -47,4 +48,22 @@ func addMenu(c *gin.Context) {
 	}
 
 	resp(c, api.RespSucc(userID))
+}
+
+func list(c *gin.Context) {
+	var (
+		err     error
+		pageNum string
+	)
+	if pageNum = c.Query("pageNum"); pageNum == "" {
+		resp(c, api.RespFailed(api.ParamsErr, err.Error()))
+		return
+	}
+
+	var data interface{}
+	if data, err = menu.List(pageNum); err != nil {
+		resp(c, api.RespFailed(api.SystemErr, err.Error()))
+		return
+	}
+	resp(c, api.RespSucc(data))
 }

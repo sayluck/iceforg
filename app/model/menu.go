@@ -22,6 +22,21 @@ type Menu struct {
 	Route   string `gorm:"column:m_route"`
 }
 
+func (m *Menu) List() (interface{}, error) {
+	var data = []Menu{}
+	dbRet := db.GetMysqlProvider().Table(MENU_TABLE_NAME).
+		Find(&data, "m_page_num = ?", m.PageNum)
+	return data, dbRet.Error
+}
+
+func (m *Menu) DetailByKeyProperty() (interface{}, error) {
+	return nil, nil
+}
+
+func (m *Menu) IsExistedByKeyProperty() (bool, error) {
+	return false, nil
+}
+
 func (m *Menu) Save() (string, error) {
 	m.Code = utils.CodeGenerate()
 	dbRet := db.GetMysqlProvider().Save(&m)

@@ -23,6 +23,10 @@ type User struct {
 	NickName string `gorm:"column:nick_name"`
 }
 
+func (u *User) List() (interface{}, error) {
+	return nil, nil
+}
+
 func (u *User) Save() (string, error) {
 	u.Code = utils.CodeGenerate()
 	dbRet := db.GetMysqlProvider().Save(&u)
