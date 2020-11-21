@@ -12,6 +12,8 @@ const (
 
 	ParamsErr    = "4001"
 	OperationErr = "4002"
+
+	UserInvalidToken = "5001"
 )
 
 type Resp struct {

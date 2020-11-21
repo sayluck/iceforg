@@ -31,10 +31,10 @@ func (r *Route) Router() {
 	// user register & login
 	userLoginRouter(routerGrp)
 
+	routerGrp.Use(middle_ware.Auth())
 	// menu
 	menuRouterGroup(routerGrp)
-
-	routerGrp.Use(middle_ware.Auth())
+	// user
 	userRouter(routerGrp)
 
 	if r.App != nil && r.Port != "" {

@@ -2,6 +2,7 @@ package menu
 
 import (
 	"context"
+	"fmt"
 )
 
 func (m *MenuAddReq) SetContext(ctx context.Context) {
@@ -9,5 +10,13 @@ func (m *MenuAddReq) SetContext(ctx context.Context) {
 }
 
 func (u *MenuAddReq) CustomValidate() error {
-	return u.BaseReq.CheckCreator()
+	err := u.checkSupCode()
+	return err
+}
+
+func (u *MenuAddReq) checkSupCode() error {
+	if u.Level > 1 && u.SupCode == "" {
+		return fmt.Errorf("field [supCode] is required,when level > 1")
+	}
+	return nil
 }

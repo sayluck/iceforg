@@ -18,14 +18,14 @@ func TestLoadConfig(t *testing.T) {
 			name: "loadYamlFile_case",
 			args: args{
 				opts: []opt{SetConfigFile(
-					"F:/goproject/iceforg/resource/config_files/config.yaml")},
+					"F:/goproject/iceforg/resource/config-files/config.yaml")},
 			},
 		},
 		//{
 		//	name: "loadPropertiesFile_case",
 		//	args: args{
 		//		opts: []opt{SetConfigFile(
-		//			"F:/goproject/iceforg/resource/config_files/multilingual_zh.properties")},
+		//			"F:/goproject/iceforg/resource/config-files/multilingual_zh.properties")},
 		//	},
 		//},
 	}

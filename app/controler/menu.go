@@ -13,10 +13,10 @@ import (
 )
 
 func menuRouterGroup(r *gin.RouterGroup) {
-	menu := r.Group("menu")
+	menuGroup := r.Group("menu")
 	{
-		menu.POST("/", addMenu)
-		menu.GET("", list)
+		menuGroup.POST("", addMenu)
+		menuGroup.GET("", list)
 	}
 }
 
@@ -24,20 +24,20 @@ func addMenu(c *gin.Context) {
 	var (
 		m      menu.MenuAddReq
 		err    error
-		userID string
+		menuID string
 	)
 	if err = c.ShouldBindJSON(&m); err != nil {
 		resp(c, api.RespFailed(api.ParamsErr, err.Error()))
 		return
 	}
+	m.SetContext(c)
 	errs := ValidateStruct(c, &m)
 	if len(errs) != 0 {
 		resp(c, api.RespFailed(api.ParamsErr,
 			multilingual.GetStrMsgs(errs)...))
 		return
 	}
-
-	if userID, err = menu.AddMenu(&m); err != nil {
+	if menuID, err = menu.AddMenu(&m); err != nil {
 		if strings.Contains(err.Error(), common.DuplicateEntry) {
 			resp(c, api.RespFailed(api.OperationErr,
 				multilingual.GetStrMsg(multilingual.MenuAlreadyExisted)))
@@ -47,7 +47,7 @@ func addMenu(c *gin.Context) {
 		return
 	}
 
-	resp(c, api.RespSucc(userID))
+	resp(c, api.RespSucc(menuID))
 }
 
 func list(c *gin.Context) {

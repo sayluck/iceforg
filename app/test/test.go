@@ -5,6 +5,6 @@ import (
 )
 
 func TestInit() {
-	cofFilePath := "F:/goproject/iceforg/resource/config_files/config.yaml"
+	cofFilePath := "F:/goproject/iceforg/resource/config-files/config.yaml"
 	config.GetConfig(config.SetConfigFile(cofFilePath))
 }

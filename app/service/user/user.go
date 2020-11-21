@@ -21,6 +21,7 @@ import (
 const (
 	UserID   = "userID"
 	UserName = "userName"
+	TeamCode = "TeamCode"
 )
 
 func Register(user *UserRegister) (string, error) {
@@ -105,7 +106,6 @@ func generateToken(u *model.User) (string, error) {
 
 func ParseToken(t string) (*UserLogin, error) {
 	if t == "" || t == "null" {
-
 		return nil, multilingual.UserInvaildToken
 	}
 	user := &UserLogin{}

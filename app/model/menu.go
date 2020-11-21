@@ -18,12 +18,13 @@ type Menu struct {
 	PageNum int    `gorm:"column:m_page_num"`
 	Name    string `gorm:"column:m_name"`
 	Sort    int    `gorm:"column:m_sort"`
+	Level   int    `gorm:"column:m_level"`
 	SupCode string `gorm:"column:m_sup_code"`
 	Route   string `gorm:"column:m_route"`
 }
 
 func (m *Menu) List() (interface{}, error) {
-	var data = []Menu{}
+	var data = []*Menu{}
 	dbRet := db.GetMysqlProvider().Table(MENU_TABLE_NAME).
 		Find(&data, "m_page_num = ?", m.PageNum)
 	return data, dbRet.Error

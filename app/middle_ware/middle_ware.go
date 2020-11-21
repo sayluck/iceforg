@@ -53,7 +53,7 @@ func Auth() gin.HandlerFunc {
 		token := ctx.GetHeader(common.Authorization)
 		u, err := user.ParseToken(token)
 		if err != nil {
-			resp := api.RespFailed(api.OperationErr,
+			resp := api.RespFailed(api.UserInvalidToken,
 				multilingual.GetStrMsg(err))
 			resp.ReqID = ctx.GetString(common.ReqID)
 			ctx.JSON(http.StatusOK, resp)
@@ -62,6 +62,8 @@ func Auth() gin.HandlerFunc {
 		}
 		ctx.Set(common.UserName, u.UserName)
 		ctx.Set(common.UserID, u.UserID)
+		// TODO add team
+		// ctx.Set(common.TEAMID, u.Password)
 
 		ctx.Next()
 	}

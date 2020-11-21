@@ -5,8 +5,9 @@ const (
 	GinReleaseModle = "release"
 	TokenSecret     = "token"
 	Authorization   = "authorization"
-	TokenIsExpired  = "Token is expired"
+	TokenIsExpired  = "token is expired"
 	UserID          = "userID"
+	TEAMID          = "teamID"
 	UserName        = "userName"
 
 	ReqID     = "reqid"
