@@ -1,4 +1,4 @@
-package model
+package common
 
 type Base struct {
 	Code string `gorm:"column:m_code" json:"code"`

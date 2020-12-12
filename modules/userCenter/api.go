@@ -1,97 +1,100 @@
-package user
+package userCenter
 
 import (
 	"context"
 	"errors"
 	"iceforg/app/common"
-	"iceforg/app/model"
 	"iceforg/pkg/config"
 	"iceforg/pkg/multilingual"
 	"iceforg/pkg/utils"
 	"strings"
 	"time"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
-
-	. "iceforg/app/log"
-
-	jwt "github.com/dgrijalva/jwt-go"
 )
 
 const (
 	UserID   = "userID"
 	UserName = "userName"
-	TeamCode = "TeamCode"
 )
 
-func Register(user *UserRegister) (string, error) {
-	var err error
+type UserCenter struct {
+}
 
-	if user.NickName == "" {
-		user.NickName = user.UserName
+func (uc *UserCenter) Register(ctx context.Context, u *UserRegister, token *string) error {
+	var (
+		err   error
+		userM User
+	)
+
+	if u.NickName == "" {
+		u.NickName = u.UserName
 	}
 
-	userM := model.User{}
+	err = utils.TramsStruct(&u, &userM)
+	if err != nil {
+		return err
+	}
+
+	userM.Code, err = userM.Save()
+	if err != nil {
+		return err
+	}
+	*token, err = generateToken(&userM)
+	return err
+}
+
+func (uc *UserCenter) Detail(ctx context.Context, name *string, detail *UserDetail) error {
+	user := &User{
+		UserName: *name,
+	}
+
+	var (
+		err error
+	)
+
+	_, err = user.DetailByKeyProperty()
+	if err != nil {
+		return err
+	}
+	return utils.TramsStruct(user, detail)
+}
+
+func (uc *UserCenter) SaveUser(ctx context.Context, u *User, code *string) error {
+	var (
+		err error
+	)
+	*code, err = u.Save()
+	return err
+}
+
+func (uc *UserCenter) Login(ctx context.Context, user *UserLogin, token *string) error {
+	var (
+		err   error
+		userM User
+	)
 
 	err = utils.TramsStruct(&user, &userM)
 	if err != nil {
-		return "", err
+		return err
 	}
-
-	userID, err := userM.Save()
-	if err != nil {
-		return "", err
-	}
-	userM.Code = userID
-	return generateToken(&userM)
-}
-
-func Detail(name string) (*UserDetail, error) {
-	user := &model.User{
-		UserName: name,
-	}
-
-	var (
-		err        error
-		userCenter = &UserDetail{}
-	)
-	_, err = user.DetailByKeyProperty()
-	if err != nil {
-		return userCenter, err
-	}
-	err = utils.TramsStruct(user, userCenter)
-	if err != nil {
-		IceLog.Errorf(context.Background(), "currentUser trams struct failed,%v", err.Error())
-	}
-	return userCenter, err
-}
-
-func Login(user *UserLogin) (string, error) {
-	var (
-		u   model.User
-		err error
-	)
-	err = utils.TramsStruct(&user, &u)
-	if err != nil {
-		return "", err
-	}
-	err = u.DetailByNameAndPw()
+	err = userM.DetailByNameAndPw()
 	if err != nil {
 		if gorm.IsRecordNotFoundError(err) {
-			return "", multilingual.UserLoginErr
+			return multilingual.UserLoginErr
 		}
-		return "", multilingual.SystemOperationError
+		return multilingual.SystemOperationError
 	}
 
-	token, err := generateToken(&u)
+	*token, err = generateToken(&userM)
 	if err != nil {
-		IceLog.Errorf(context.Background(), "generate token error:%v", err)
-		return "", multilingual.SystemOperationError
+		return multilingual.SystemOperationError
 	}
-	return token, nil
+	return nil
 }
 
-func generateToken(u *model.User) (string, error) {
+func generateToken(u *User) (string, error) {
 	claim := jwt.MapClaims{
 		UserID:   u.Code,
 		UserName: u.UserName,
@@ -104,7 +107,7 @@ func generateToken(u *model.User) (string, error) {
 	return token.SignedString([]byte(common.TokenSecret))
 }
 
-func ParseToken(t string) (*UserLogin, error) {
+func (uc *UserCenter) ParseToken(t string) (*UserLogin, error) {
 	if t == "" || t == "null" {
 		return nil, multilingual.UserInvaildToken
 	}

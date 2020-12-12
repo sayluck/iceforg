@@ -5,6 +5,7 @@ import (
 	. "iceforg/app/log"
 	"iceforg/app/service/user"
 	. "iceforg/app/validate"
+	"iceforg/modules/userCenter"
 	"iceforg/pkg/common/api"
 	"iceforg/pkg/multilingual"
 	"strings"
@@ -32,7 +33,7 @@ func userRouter(r *gin.RouterGroup) {
 
 func register(c *gin.Context) {
 	var (
-		u      user.UserRegister
+		u      userCenter.UserRegister
 		err    error
 		userID string
 	)
@@ -78,7 +79,7 @@ func currentUser(c *gin.Context) {
 	var (
 		err  error
 		name string
-		u    *user.UserDetail
+		u    *userCenter.UserDetail
 	)
 	name = c.GetString(user.UserName)
 	if u, err = user.Detail(name); err != nil {
@@ -90,7 +91,7 @@ func currentUser(c *gin.Context) {
 
 func login(c *gin.Context) {
 	var (
-		u     user.UserLogin
+		u     userCenter.UserLogin
 		err   error
 		token string
 	)

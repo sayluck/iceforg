@@ -2,12 +2,13 @@ package user
 
 import (
 	"context"
+	"iceforg/modules/userCenter"
 )
 
-func (u *UserRegister) SetContext(ctx context.Context) {
+func (u *userCenter.UserRegister) SetContext(ctx context.Context) {
 	u.Context = ctx
 }
 
-func (u *UserRegister) CustomValidate() error {
+func (u *userCenter.UserRegister) CustomValidate() error {
 	return nil
 }

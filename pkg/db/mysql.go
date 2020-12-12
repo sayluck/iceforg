@@ -47,7 +47,7 @@ func (m *mysql) initer() {
 		defer m.locker.Unlock()
 
 		if m.db, err = gorm.Open(mysqlType, m.getConnectStr()); err != nil {
-			log.Error("mysql start failed,%s", err.Error())
+			log.Errorf("mysql start failed,%s", err.Error())
 			panic(fmt.Sprintf("mysql start failed,%s", err.Error()))
 		}
 

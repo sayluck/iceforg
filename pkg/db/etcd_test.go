@@ -24,12 +24,12 @@ func TestGetClient(t *testing.T) {
 	}
 	utils.PrettyJsonPrint(resp1)
 
-	resp, err := cli.Get(ctx, "/test",
+	resp, err := cli.Get(ctx, "key1",
 		clientv3.WithPrefix(),
 		clientv3.WithSort(clientv3.SortByKey, clientv3.SortDescend))
 	if err != nil {
 		t.Fatalf("get etcd client error,%v", err)
 	}
-	cancel()
 	fmt.Printf("%v", resp.Kvs)
+	cancel()
 }

@@ -1,4 +1,4 @@
-package model
+package userCenter
 
 import (
 	"iceforg/pkg/db"
@@ -14,17 +14,6 @@ const (
 
 func (*User) TableName() string {
 	return USER_TABLE_NAME
-}
-
-type User struct {
-	Base
-	UserName string `gorm:"column:name"`
-	Password string `gorm:"column:password"`
-	NickName string `gorm:"column:nick_name"`
-}
-
-func (u *User) List() (interface{}, error) {
-	return nil, nil
 }
 
 func (u *User) Save() (string, error) {
@@ -46,21 +35,21 @@ func (u *User) DetailByKeyProperty() (interface{}, error) {
 
 func (u *User) IsExistedByKeyProperty() (bool, error) {
 	var cnt int64
-	db := db.GetMysqlProvider().Table(USER_TABLE_NAME).Where("name = ?", u.UserName).Count(&cnt)
-	return cnt > 0, db.Error
+	dbRet := db.GetMysqlProvider().Table(USER_TABLE_NAME).Where("name = ?", u.UserName).Count(&cnt)
+	return cnt > 0, dbRet.Error
 }
 
 func (u *User) IsExisted() (bool, error) {
 	var cnt int64
-	db := db.GetMysqlProvider().Table(USER_TABLE_NAME).
+	dbRet := db.GetMysqlProvider().Table(USER_TABLE_NAME).
 		Where("name = ? and password = ?",
 			u.UserName, u.Password).Count(&cnt)
-	return cnt > 0, db.Error
+	return cnt > 0, dbRet.Error
 }
 
 func (u *User) DetailByNameAndPw() error {
-	db := db.GetMysqlProvider().Table(USER_TABLE_NAME).
+	dbRet := db.GetMysqlProvider().Table(USER_TABLE_NAME).
 		Where("name = ? and password = ?",
 			u.UserName, u.Password).Find(&u)
-	return db.Error
+	return dbRet.Error
 }
