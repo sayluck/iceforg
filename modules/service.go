@@ -17,12 +17,12 @@ func main() {
 	r := new(rpcx.RpcxCreator)
 	typeRpcx := r.Create(getRpcConf())
 
-	common.IceLog.Debug("Start Create Rpc Service....")
+	common.IceLog.Debug("Start Create RPC Service....")
 	typeRpcx.CreateService()
 	typeRpcx.RegistryService([]rpc.ServiceInfo{
-		registryUserCenter("usercenter"),
+		registryUserCenter("user"),
 	})
-	common.IceLog.Debug("Start Rpc Service....")
+	common.IceLog.Debug("Start RPC Service....")
 	typeRpcx.StartService()
 }
 

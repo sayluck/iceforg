@@ -1,5 +1,7 @@
 package rpc
 
+import "context"
+
 type ServiceInfo struct {
 	ServiceName string
 	Rcvr        interface{}
@@ -18,13 +20,17 @@ type RpcConfig struct {
 	UpdateInterval int64
 }
 
-type Rpc interface {
+type RPC interface {
 	RegistryService(infos []ServiceInfo)
-	CreateClient(servicePath string) interface{}
+	CreateClient(servicePath string) RpcClient
 	CreateService()
 	StartService()
 }
 
+type RpcClient interface {
+	Call(ctx context.Context, serviceMethod string, args interface{}, reply interface{}) error
+}
+
 type RpcCreater interface {
-	Create(*RpcConfig) Rpc
+	Create(*RpcConfig) RPC
 }

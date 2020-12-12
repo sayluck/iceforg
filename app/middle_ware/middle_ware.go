@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"iceforg/app/common"
 	. "iceforg/app/log"
-	"iceforg/app/service/user"
 	"iceforg/pkg/common/api"
 	"iceforg/pkg/multilingual"
 	"iceforg/pkg/utils"
 	"io/ioutil"
 	"net/http"
+	"runtime"
 
 	"github.com/gin-gonic/gin"
 )
@@ -41,7 +41,9 @@ func RecordPanic() gin.HandlerFunc {
 					multilingual.GetStrMsg(multilingual.SystemPanicError))
 				resp.ReqID = c.GetString(common.ReqID)
 				c.JSON(http.StatusInternalServerError, resp)
-				IceLog.Errorf(c, "recover form panic:%v", err)
+				buf := make([]byte, 1<<10)
+				runtime.Stack(buf, true)
+				IceLog.Errorf(c, "recover form panic:%v", string(buf))
 			}
 		}()
 		c.Next()
@@ -50,22 +52,22 @@ func RecordPanic() gin.HandlerFunc {
 
 func Auth() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		token := ctx.GetHeader(common.Authorization)
-		u, err := user.ParseToken(token)
-		if err != nil {
-			resp := api.RespFailed(api.UserInvalidToken,
-				multilingual.GetStrMsg(err))
-			resp.ReqID = ctx.GetString(common.ReqID)
-			ctx.JSON(http.StatusOK, resp)
-			ctx.Abort()
-			return
-		}
-		ctx.Set(common.UserName, u.UserName)
-		ctx.Set(common.UserID, u.UserID)
-		// TODO add team
-		// ctx.Set(common.TEAMID, u.Password)
-
-		ctx.Next()
+		//	token := ctx.GetHeader(common.Authorization)
+		//	u, err := user.ParseToken(token)
+		//	if err != nil {
+		//		resp := api.RespFailed(api.UserInvalidToken,
+		//			multilingual.GetStrMsg(err))
+		//		resp.ReqID = ctx.GetString(common.ReqID)
+		//		ctx.JSON(http.StatusOK, resp)
+		//		ctx.Abort()
+		//		return
+		//	}
+		//	ctx.Set(common.UserName, u.UserName)
+		//	ctx.Set(common.Code, u.Code)
+		//	// TODO add team
+		//	// ctx.Set(common.TEAMID, u.Password)
+		//
+		//	ctx.Next()
 	}
 }
 

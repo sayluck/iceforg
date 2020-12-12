@@ -3,9 +3,8 @@ package controler
 import (
 	"iceforg/app/common"
 	. "iceforg/app/log"
-	"iceforg/app/service/user"
+	"iceforg/app/rpc/user"
 	. "iceforg/app/validate"
-	"iceforg/modules/userCenter"
 	"iceforg/pkg/common/api"
 	"iceforg/pkg/multilingual"
 	"strings"
@@ -33,7 +32,7 @@ func userRouter(r *gin.RouterGroup) {
 
 func register(c *gin.Context) {
 	var (
-		u      userCenter.UserRegister
+		u      user.UserRegister
 		err    error
 		userID string
 	)
@@ -48,7 +47,7 @@ func register(c *gin.Context) {
 		return
 	}
 
-	if userID, err = user.Register(&u); err != nil {
+	if userID, err = u.Register(); err != nil {
 		if strings.Contains(err.Error(), common.DuplicateEntry) {
 			resp(c, api.RespFailed(api.OperationErr,
 				multilingual.GetStrMsg(multilingual.UserAlreadyExisted)))
@@ -63,12 +62,12 @@ func register(c *gin.Context) {
 
 func detail(c *gin.Context) {
 	var (
-		name string
+		code string
 		err  error
 		u    interface{}
 	)
-	name = c.Query("name")
-	if u, err = user.Detail(name); err != nil {
+	code = c.Query("code")
+	if u, err = user.Detail(c, code); err != nil {
 		resp(c, api.RespFailed(api.OperationErr, multilingual.GetStrMsg(err)))
 		return
 	}
@@ -76,22 +75,22 @@ func detail(c *gin.Context) {
 }
 
 func currentUser(c *gin.Context) {
-	var (
-		err  error
-		name string
-		u    *userCenter.UserDetail
-	)
-	name = c.GetString(user.UserName)
-	if u, err = user.Detail(name); err != nil {
-		resp(c, api.RespFailed(api.OperationErr, multilingual.GetStrMsg(err)))
-		return
-	}
-	resp(c, api.RespSucc(u))
+	//var (
+	//	err  error
+	//	name string
+	//	u    *userCenter.UserDetail
+	//)
+	//name = c.GetString(user.UserName)
+	//if u, err = user.Detail(name); err != nil {
+	//	resp(c, api.RespFailed(api.OperationErr, multilingual.GetStrMsg(err)))
+	//	return
+	//}
+	//resp(c, api.RespSucc(u))
 }
 
 func login(c *gin.Context) {
 	var (
-		u     userCenter.UserLogin
+		u     user.UserLogin
 		err   error
 		token string
 	)
@@ -101,8 +100,8 @@ func login(c *gin.Context) {
 		resp(c, api.RespFailed(api.ParamsErr, err.Error()))
 		return
 	}
-
-	token, err = user.Login(&u)
+	u.Context = c
+	token, err = u.Login()
 	if err != nil {
 		IceLog.Errorf(c, "login error:%s", err.Error())
 		resp(c, api.RespFailed(api.SystemErr, multilingual.GetStrMsg(err)))

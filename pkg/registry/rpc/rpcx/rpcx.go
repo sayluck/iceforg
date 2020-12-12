@@ -14,7 +14,7 @@ import (
 type RpcxCreator struct {
 }
 
-func (r *RpcxCreator) Create(c *rpc.RpcConfig) rpc.Rpc {
+func (r *RpcxCreator) Create(c *rpc.RpcConfig) rpc.RPC {
 	return &Rpcx{
 		Addr:           c.Addr,
 		Network:        c.Network,
@@ -44,11 +44,10 @@ func (r *Rpcx) RegistryService(infos []rpc.ServiceInfo) {
 		}
 	}
 }
-func (r *Rpcx) CreateClient(serviceName string) interface{} {
+func (r *Rpcx) CreateClient(serviceName string) rpc.RpcClient {
 	d := client.NewEtcdV3Discovery(r.BasePath, r.ServicePath, r.EtcdAddrs, nil)
-	r.XClient = client.NewXClient(serviceName,
-		client.Failtry, client.RandomSelect, d, client.DefaultOption)
-	return r.XClient
+	return client.NewXClient(serviceName, client.Failtry, client.RandomSelect,
+		d, client.DefaultOption)
 }
 func (r *Rpcx) CreateService() {
 	r.Server = server.NewServer()

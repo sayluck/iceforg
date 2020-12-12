@@ -26,7 +26,7 @@ func (u *User) DetailByKeyProperty() (interface{}, error) {
 	var (
 		err error
 	)
-	err = db.GetMysqlProvider().Where("name = ?", u.UserName).First(&u).Error
+	err = db.GetMysqlProvider().Where("m_code = ?", u.Code).First(&u).Error
 	if gorm.IsRecordNotFoundError(err) {
 		return u, multilingual.UserNotExisted
 	}

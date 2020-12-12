@@ -47,7 +47,9 @@ func (l *iceLog) Debugf(c context.Context, format string, arg ...interface{}) {
 func (l *iceLog) Error(c context.Context, arg ...interface{}) {
 	IceLog.Logger.Error(prepareLogMsg(c, arg))
 }
-
+func (l *iceLog) Errorf(c context.Context, format string, arg ...interface{}) {
+	IceLog.Logger.Errorf(format, prepareLogMsg(c, arg))
+}
 func (l *iceLog) Fatalf(c context.Context, format string, arg ...interface{}) {
 	IceLog.Logger.Fatalf(format, prepareLogMsg(c, arg))
 }

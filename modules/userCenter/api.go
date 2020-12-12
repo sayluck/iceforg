@@ -22,7 +22,7 @@ const (
 type UserCenter struct {
 }
 
-func (uc *UserCenter) Register(ctx context.Context, u *UserRegister, token *string) error {
+func (uc *UserCenter) Register(ctx context.Context, u *UserRegister, code *string) error {
 	var (
 		err   error
 		userM User
@@ -37,17 +37,13 @@ func (uc *UserCenter) Register(ctx context.Context, u *UserRegister, token *stri
 		return err
 	}
 
-	userM.Code, err = userM.Save()
-	if err != nil {
-		return err
-	}
-	*token, err = generateToken(&userM)
+	*code, err = userM.Save()
 	return err
 }
 
-func (uc *UserCenter) Detail(ctx context.Context, name *string, detail *UserDetail) error {
+func (uc *UserCenter) Detail(ctx context.Context, code *string, detail *UserDetail) error {
 	user := &User{
-		UserName: *name,
+		Code: *code,
 	}
 
 	var (
@@ -130,7 +126,6 @@ func (uc *UserCenter) ParseToken(t string) (*UserLogin, error) {
 		return user, multilingual.UserInvaildToken
 	}
 
-	user.UserID = claim[UserID].(string)
 	user.UserName = claim[UserName].(string)
 	return user, nil
 }

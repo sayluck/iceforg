@@ -14,6 +14,7 @@ require (
 	github.com/lib/pq v1.2.0 // indirect
 	github.com/magiconair/properties v1.8.1
 	github.com/mattn/go-isatty v0.0.8 // indirect
+	github.com/pkg/errors v0.8.1
 	github.com/prometheus/common v0.6.0
 	github.com/rcrowley/go-metrics v0.0.0-20190826022208-cac0b30c2563
 	github.com/rpcx-ecosystem/rpcx-examples3 v1.1.6
